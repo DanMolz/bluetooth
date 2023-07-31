@@ -212,7 +212,6 @@ func (a *Adapter) Scan(callback func(*Adapter, ScanResult)) error {
 							iMap[k] = v.Value().(interface{})
 						}
 						props.ServiceData = iMap
-
 					}
 				}
 				callback(a, makeScanResult(props))
