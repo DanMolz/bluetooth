@@ -199,12 +199,6 @@ func (a *Adapter) Scan(callback func(*Adapter, ScanResult)) error {
 						props.Name = val.Value().(string)
 					case "UUIDs":
 						props.UUIDs = val.Value().([]string)
-					case "ServiceData":
-						interface_map := make(map[string]interface{})
-						for k, v := range val.Value().(map[string]dbus.Variant) {
-							interface_map[k] = v
-						}
-						props.ServiceData = interface_map
 					case "ManufacturerData":
 						// work around for https://github.com/muka/go-bluetooth/issues/163
 						mData := make(map[uint16]interface{})
@@ -212,6 +206,13 @@ func (a *Adapter) Scan(callback func(*Adapter, ScanResult)) error {
 							mData[k] = v.Value().(interface{})
 						}
 						props.ManufacturerData = mData
+					case "ServiceData":
+						iMap := make(map[string]interface{})
+						for k, v := range val.Value().(map[string]dbus.Variant) {
+							iMap[k] = v.Value().(interface{})
+						}
+						props.ServiceData = iMap
+
 					}
 				}
 				callback(a, makeScanResult(props))
