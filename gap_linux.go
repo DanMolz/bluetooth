@@ -209,7 +209,7 @@ func (a *Adapter) Scan(callback func(*Adapter, ScanResult)) error {
 					case "ServiceData":
 						iMap := make(map[string]interface{})
 						for k, v := range val.Value().(map[string]dbus.Variant) {
-							iMap[k] = v.Value().(interface{})
+							iMap[k] = v
 						}
 						props.ServiceData = iMap
 					}

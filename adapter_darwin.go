@@ -141,17 +141,17 @@ func makeScanResult(prph cbgo.Peripheral, advFields cbgo.AdvFields, rssi int) Sc
 		serviceUUIDs = append(serviceUUIDs, parsedUUID)
 	}
 
-	var serviceDatas []AdvServiceData
-	for _, serviceData := range advFields.ServiceData {
-		uuid, _ := ParseUUID(serviceData.UUID.String())
-		serviceDatas = append(serviceDatas, AdvServiceData{UUID: uuid, Data: serviceData.Data})
-	}
-
 	manufacturerData := make(map[uint16][]byte)
 	if len(advFields.ManufacturerData) > 2 {
 		manufacturerID := uint16(advFields.ManufacturerData[0])
 		manufacturerID += uint16(advFields.ManufacturerData[1]) << 8
 		manufacturerData[manufacturerID] = advFields.ManufacturerData[2:]
+	}
+
+	var serviceDatas []AdvServiceData
+	for _, serviceData := range advFields.ServiceData {
+		uuid, _ := ParseUUID(serviceData.UUID.String())
+		serviceDatas = append(serviceDatas, AdvServiceData{UUID: uuid, Data: serviceData.Data})
 	}
 
 	// Peripheral UUID is randomized on macOS, which means to
