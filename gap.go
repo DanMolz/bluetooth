@@ -86,6 +86,11 @@ type ScanResult struct {
 	AdvertisementPayload
 }
 
+type AdvServiceData struct {
+	UUID UUID
+	Data []byte
+}
+
 // AdvertisementPayload contains information obtained during a scan (see
 // ScanResult). It is provided as an interface as there are two possible
 // implementations: an implementation that works with raw data (usually on
@@ -109,6 +114,8 @@ type AdvertisementPayload interface {
 	// ManufacturerData returns a map with all the manufacturer data present in the
 	//advertising. IT may be empty.
 	ManufacturerData() map[uint16][]byte
+
+	GetServiceDatas() []AdvServiceData
 }
 
 // AdvertisementFields contains advertisement fields in structured form.
@@ -124,6 +131,8 @@ type AdvertisementFields struct {
 
 	// ManufacturerData is the manufacturer data of the advertisement.
 	ManufacturerData map[uint16][]byte
+
+	ServiceDatas []AdvServiceData
 }
 
 // advertisementFields wraps AdvertisementFields to implement the
@@ -159,6 +168,10 @@ func (p *advertisementFields) Bytes() []byte {
 // ManufacturerData returns the underlying ManufacturerData field.
 func (p *advertisementFields) ManufacturerData() map[uint16][]byte {
 	return p.AdvertisementFields.ManufacturerData
+}
+
+func (p *advertisementFields) GetServiceDatas() []AdvServiceData {
+	return p.ServiceDatas
 }
 
 // rawAdvertisementPayload encapsulates a raw advertisement packet. Methods to
@@ -273,6 +286,10 @@ func (buf *rawAdvertisementPayload) reset() {
 	// The data is not reset (only the length), because with a zero length the
 	// data is undefined.
 	buf.len = 0
+}
+
+func (buf *rawAdvertisementPayload) GetServiceDatas() []AdvServiceData {
+	return nil
 }
 
 // addFromOptions constructs a new advertisement payload (assumed to be empty
