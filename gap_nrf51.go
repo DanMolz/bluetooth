@@ -1,10 +1,14 @@
 //go:build softdevice && s110v8
-// +build softdevice,s110v8
 
 package bluetooth
 
 /*
 #include "ble_gap.h"
+
+// Workaround wrapper function to avoid pointer arguments escaping to heap
+static inline uint32_t sd_ble_gap_adv_start_noescape(ble_gap_adv_params_t const p_adv_params) {
+	return sd_ble_gap_adv_start(&p_adv_params);
+}
 */
 import "C"
 
@@ -76,5 +80,5 @@ func (a *Advertisement) start() uint32 {
 		interval: uint16(a.interval),
 		timeout:  0, // no timeout
 	}
-	return C.sd_ble_gap_adv_start(&params)
+	return C.sd_ble_gap_adv_start_noescape(params)
 }
